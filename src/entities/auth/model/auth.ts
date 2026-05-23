@@ -1,7 +1,7 @@
 import { create } from "zustand";
-import { authApi } from "@entities/auth/api/auth";
 import { companyUserApi } from "@entities/warehouse/api/warehouseUser";
 import { companyApi } from "@entities/company/api/company";
+import { authApi } from "../api/auth";
 
 function parseJwt(token) {
 	try {
