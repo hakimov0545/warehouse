@@ -7,13 +7,12 @@ export default defineConfig({
 	resolve: {
 		alias: {
 			"@": resolve(__dirname, "./src"),
-			"@api": resolve(__dirname, "./src/api"),
-			"@store": resolve(__dirname, "./src/store"),
-			"@hooks": resolve(__dirname, "./src/hooks"),
-			"@components": resolve(__dirname, "./src/components"),
-			"@views": resolve(__dirname, "./src/views"),
-			"@utils": resolve(__dirname, "./src/utils"),
-			"@types": resolve(__dirname, "./src/types"),
+			"@app": resolve(__dirname, "./src/app"),
+			"@pages": resolve(__dirname, "./src/pages"),
+			"@widgets": resolve(__dirname, "./src/widgets"),
+			"@features": resolve(__dirname, "./src/features"),
+			"@entities": resolve(__dirname, "./src/entities"),
+			"@shared": resolve(__dirname, "./src/shared"),
 		},
 	},
 	server: {

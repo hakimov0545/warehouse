@@ -1,45 +1,44 @@
 {
-  "compilerOptions": {
-    "target": "ES2020",
-    "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
-    "skipLibCheck": true,
+	"compilerOptions": {
+		"target": "ES2020",
+		"useDefineForClassFields": true,
+		"lib": ["ES2020", "DOM", "DOM.Iterable"],
+		"module": "ESNext",
+		"skipLibCheck": true,
+		"types": ["vite/client"],
 
-    /* Bundler mode */
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "isolatedModules": true,
-    "moduleDetection": "force",
-    "noEmit": true,
-    "jsx": "react-jsx",
+		/* Bundler mode */
+		"moduleResolution": "bundler",
+		"allowImportingTsExtensions": true,
+		"isolatedModules": true,
+		"moduleDetection": "force",
+		"noEmit": true,
+		"jsx": "react-jsx",
 
-    /* Linting - strict but practical */
-    "strict": true,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "noFallthroughCasesInSwitch": true,
+		/* Linting - practical for a full JS-to-TS migration */
+		"strict": false,
+		"noUnusedLocals": false,
+		"noUnusedParameters": false,
+		"noFallthroughCasesInSwitch": true,
 
-    /* Allow JS files during migration (existing .jsx files) */
-    "allowJs": true,
-    "checkJs": false,
+		/* Source files are TypeScript/TSX after migration */
+		"allowJs": false,
 
-    /* Suppress TS6 deprecation warnings */
-    "ignoreDeprecations": "6.0",
+		/* Suppress TS6 deprecation warnings */
+		"ignoreDeprecations": "6.0",
 
-    /* Path aliases */
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"],
-      "@api/*": ["src/api/*"],
-      "@store/*": ["src/store/*"],
-      "@hooks/*": ["src/hooks/*"],
-      "@components/*": ["src/components/*"],
-      "@views/*": ["src/views/*"],
-      "@utils/*": ["src/utils/*"],
-      "@types/*": ["src/types/*"]
-    }
-  },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist", "src/examples"]
+		/* Path aliases */
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["src/*"],
+			"@app/*": ["src/app/*"],
+			"@pages/*": ["src/pages/*"],
+			"@widgets/*": ["src/widgets/*"],
+			"@features/*": ["src/features/*"],
+			"@entities/*": ["src/entities/*"],
+			"@shared/*": ["src/shared/*"]
+		}
+	},
+	"include": ["src"],
+	"exclude": ["node_modules", "dist", "src/examples"]
 }

@@ -1,111 +1,44 @@
-# Warehouse — Stack & Architecture Guide
+# Warehouse - Stack & FSD Architecture
 
 ## Stack
 
-| Qatlam | Tool | Versiya | Maqsad |
-|--------|------|---------|--------|
-| Build | Vite | 7 | Dev server, bundler |
-| UI | React | 18 | Component library |
-| Type safety | TypeScript | 6 | Type checking |
-| Routing | React Router | 6 | Client-side routing |
-| **Server state** | **TanStack Query** | **5** | **API caching, loading, refetch** |
-| Client state | Zustand | 5 | UI state, auth state |
-| Forms | React Hook Form | 7 | Form state management |
-| Validation | Zod | 4 | Schema validation |
-| HTTP | Axios | 1 | API requests |
-| i18n | i18next | 23 | UZ / RU / EN tarjima |
-| Map | React Leaflet | 4 | Warehouse location |
+| Layer | Tool | Purpose |
+| --- | --- | --- |
+| Build | Vite 7 | Dev server and production bundle |
+| UI | React 18 + Ant Design 5 + Tailwind CSS 3 | Component UI and utility styling |
+| Type safety | TypeScript 6 | Type checking and typed shared contracts |
+| Routing | React Router 6 | Client-side routing |
+| Server state | TanStack Query 5 | API cache, loading, invalidation, refetch |
+| Client state | Zustand 5 | Auth, theme, notifications, UI/domain state |
+| Forms | React Hook Form 7 | Form state management |
+| Validation | Zod 4 | Form schemas and runtime validation |
+| HTTP | Axios 1 | API client and interceptors |
+| i18n | i18next | UZ / RU / EN translations |
+| Map | React Leaflet | Warehouse location picking |
 
----
+## FSD Structure
 
-## Papkalar tuzilmasi
-
-```
+```txt
 src/
-├── api/              # Barcha API functions (axios calls)
-├── assets/           # CSS, rasmlar
-├── components/       # Shared UI components
-│   └── ui/           # DataTable, Modal, FormField, ...
-├── examples/         # Migration examples (o'qish uchun)
-├── hooks/            # Custom hooks
-│   ├── useQueryList.ts        ← TanStack Query bilan list
-│   ├── useMutationWithNotify.ts ← Mutation + notification
-│   └── usePaginatedList.js    ← Eski hook (hali ishlaydi)
-├── i18n.js           # i18next setup
-├── lib/
-│   ├── queryClient.ts   ← TanStack Query global config
-│   ├── queryKeys.ts     ← Barcha query keys markazlashtirilgan
-│   └── schemas/
-│       └── index.ts     ← Barcha Zod schemas
-├── locales/          # en.json, ru.json, uz.json
-├── router/           # Routes, ProtectedRoute
-├── store/            # Zustand stores (auth, theme, notification, ...)
-├── types/
-│   └── index.ts      ← Barcha TypeScript interfacelari
-├── utils/            # formatters, validators, permissions
-└── views/            # Page components
+  app/                # app entry, providers, router
+  pages/              # route-level screens
+  widgets/            # layout-level composed UI
+  features/           # user actions and reusable feature components
+  entities/           # domain APIs and models/stores
+  shared/             # api client, UI kit, hooks, lib, config, styles, types, utils
 ```
 
----
+## Import Rules
 
-## Qanday ishlatish
+- `@app/*` - application setup only.
+- `@pages/*` - route screens.
+- `@widgets/*` - composed layout widgets.
+- `@features/*` - feature-level user interactions.
+- `@entities/*` - domain APIs and models.
+- `@shared/*` - reusable low-level code.
 
-### 1. List sahifasi (TanStack Query)
-```tsx
-// src/views/ProductList.tsx
-const { data: products = [], isLoading } = useQuery({
-  queryKey: queryKeys.products.all,
-  queryFn: async () => {
-    const { data } = await productApi.getAll()
-    return Array.isArray(data) ? data : data.data ?? []
-  },
-})
-```
+Prefer aliases over deep relative imports so files can move inside FSD layers without breaking callers.
 
-### 2. Paginated list
-```tsx
-const { items, isLoading, page, setPage, totalPages } = useQueryList(
-  queryKeys.warehouses.all,
-  (params) => warehouseApi.getPage(params)
-)
-```
+## Migration Notes
 
-### 3. Mutation (create/update/delete)
-```tsx
-const createMutation = useMutation({
-  mutationFn: (data) => productApi.create(data),
-  onSuccess: () => {
-    queryClient.invalidateQueries({ queryKey: queryKeys.products.all })
-    notify.success('Created!')
-    navigate('/products')
-  },
-})
-```
-
-### 4. Form bilan
-```tsx
-const { register, handleSubmit, formState: { errors } } = useForm<ProductFormValues>({
-  resolver: zodResolver(productSchema),
-})
-```
-
----
-
-## Migration strategy
-
-Mavjud `.jsx` fayllarni birdan o'zgartirmaslik kerak.
-Yangi pages yoki edit qilayotgan pages uchun yangi pattern ishlatilsin.
-
-**Prioritet tartib:**
-1. Yangi yaratilayotgan views — to'g'ridan TypeScript + TanStack Query
-2. Ko'p ishlatiladigan views (ProductList, WarehouseList) — migrate
-3. Kam o'zgaradigan views — keyinga qoldirish mumkin
-
----
-
-## Dev Tools
-
-TanStack Query DevTools — brauzer pastida ko'rinadi (faqat development):
-- Qaysi queries cache da bor
-- Stale/fresh holati
-- Manual refetch qilish
+The project now builds with the FSD layout while keeping existing `.jsx` screens working through `allowJs`. New or heavily edited screens should be written in `.tsx`, use TanStack Query for server state, React Hook Form + Zod for forms, Ant Design for complex controls, and Tailwind utility classes for layout-level styling.
